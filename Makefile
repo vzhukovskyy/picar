@@ -1,7 +1,7 @@
-SRC = main.c ws_server.c http_server.c
+SRC = main.c ws_server.c http_server.c /usr/local/lib/libws.a
 MAIN = picar.bin
 CFLAGS += -g -fno-builtin-log -I/usr/local/include
-LDFLAGS += -L/usr/local/lib64 -lws
+LDFLAGS += -lpthread
 
 all: $(MAIN)
 

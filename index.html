@@ -4,7 +4,7 @@ Test
 </body>
 <script>
 
-var websocket = new WebSocket("http://localhost:8089/");
+var websocket = new WebSocket("ws://picar2.local:8089/");
 websocket.binaryType = 'arraybuffer'
 websocket.onopen = function(event) {
     console.log("websocket opened");

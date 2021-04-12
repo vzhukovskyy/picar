@@ -1,5 +1,8 @@
+#include <stdio.h>
 #include <pthread.h>
 #include <signal.h>
+#include <semaphore.h>
+#include <string.h>
 
 void* http_server_serve(void *arg);
 void http_server_stop();
@@ -8,7 +11,7 @@ void* ws_server_serve(void *arg);
 static sem_t exit_semaphore;
 
 static void signal_handler(int sig) {
-    info("main: got signal %d (%s)", sig, strsignal(sig));
+    printf("main: got signal %d (%s)", sig, strsignal(sig));
     sem_post(&exit_semaphore);
 }
 

@@ -17,7 +17,7 @@ int receive_request(int fd, const char** method, const char** url);
 void* http_server_serve(void *arg) {
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0) {
-        printf("ERROR opening socket: %s", strerror(errno));
+        printf("ERROR opening socket: %s\n", strerror(errno));
         return NULL;
     }
     
@@ -30,14 +30,14 @@ void* http_server_serve(void *arg) {
     serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serveraddr.sin_port = htons((unsigned short)PORT);
     if (bind(server_fd, (struct sockaddr *) &serveraddr, sizeof(serveraddr)) < 0) {
-        printf("ERROR on binding: %s", strerror(errno));
+        printf("ERROR on binding: %s\n", strerror(errno));
         return NULL;
     }
     
-    printf("http_server: listening on port %d", PORT);
+    printf("http_server: listening on port %d\n", PORT);
 
     if (listen(server_fd, 1) < 0) {
-        printf("ERROR on listen: %s", strerror(errno));
+        printf("ERROR on listen: %s\n", strerror(errno));
         return NULL;
     }
     
@@ -53,26 +53,26 @@ void* http_server_serve(void *arg) {
         if (res <= 0)
             continue;
 
-        printf("http_server: client connected");
+        printf("http_server: client connected\n");
 
         struct sockaddr_in client_addr;
         socklen_t client_addr_len = sizeof(client_addr);
         int client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &client_addr_len);
         if (client_fd < 0) {
-            printf("ERROR in accept: %s", strerror(errno));
+            printf("ERROR in accept: %s\n", strerror(errno));
             continue;
         }
 
-        printf("http_server: client accepted");
+        printf("http_server: client accepted\n");
         
         const char *method, *url;
         int received = receive_request(client_fd, &method, &url);
         if (received <= 0) {
-            printf("http_server: no request");
+            printf("http_server: no request\n");
             close(client_fd);
             continue;
         }
-        printf("http_server: request %s %s", method, url);
+        printf("http_server: request %s %s\n", method, url);
 
         if (strcmp(method, "GET") || strcmp(url, "/")) {
             socket_print(client_fd, 
@@ -105,7 +105,7 @@ void* http_server_serve(void *arg) {
     }
 
     close(server_fd);
-    printf("http_server: server shut down");
+    printf("http_server: server shut down\n");
     return NULL;
 }
 
@@ -116,7 +116,7 @@ int receive_request(int fd, const char** method, const char **url) {
     char *buf = buffer;
     int buf_len = sizeof(buffer);
 
-    printf("http_server: receiving request");
+    printf("http_server: receiving request\n");
     while (!stopped) {
         int recvd = recv(fd, buf, buf_len-1, MSG_DONTWAIT);
         if (recvd <= 0) {
@@ -124,7 +124,7 @@ int receive_request(int fd, const char** method, const char **url) {
                 usleep(100);
                 continue;
             } else {
-                printf("http_thread: error %d(%s) receiving request", errno, strerror(errno));
+                printf("http_thread: error %d(%s) receiving request\n", errno, strerror(errno));
                 return 0;
             }
         }
@@ -142,11 +142,11 @@ int receive_request(int fd, const char** method, const char **url) {
                 return 1;
             }
         }
-        printf("http_server: cannot parse request");
+        printf("http_server: cannot parse request\n");
         return 0;
     }
 
-    printf("http_server: request not received");
+    printf("http_server: request not received\n");
     return 0;
 }
 
